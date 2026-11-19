@@ -59,7 +59,7 @@ details summary{cursor:pointer;color:var(--acc);font-size:13.5px}
 ul{padding-inline-start:18px;margin:6px 0}
 li{margin-bottom:4px}
 @media (max-width:480px){.badge{min-width:76px;height:76px}.badge b{font-size:28px}.opt{grid-template-columns:1.5fr 1fr 1fr .9fr}}
-.sugg{position:absolute;inset-inline:0;top:100%;z-index:10;background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.08);overflow:hidden}
+.sugg{margin-top:4px;background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.08);overflow:hidden}
 .sugg:empty{display:none}
 .sg{padding:9px 10px;border-bottom:1px solid var(--line);cursor:pointer;font-size:14px}
 .sg:last-child{border-bottom:0}
@@ -226,7 +226,7 @@ async function fetchJSON(url, allowMcp=true){
  const t=String(raw||''); const i=t.search(/[\[{]/); try{return JSON.parse(t.slice(i));}catch(e){return null;}
 }
 const NOM='https://nominatim.openstreetmap.org/search?format=json&limit=1&addressdetails=1&countrycodes=il&accept-language=he&q=';
-const PHO='https://photon.komoot.io/api/?limit=6&bbox=34.2,29.4,35.95,33.4&q=';
+const PHO='https://photon.komoot.io/api/?limit=6&lang=default&bbox=34.2,29.4,35.95,33.4&q=';
 function fromNom(h){const ad=h.address||{};return {lat:+h.lat,lon:+h.lon,label:h.display_name.split(',').slice(0,4).join(','),approx:h.class==='highway'||h.addresstype==='road'||!ad.house_number,
  urban:ad.city||ad.town||'', rural:ad.village||ad.hamlet||ad.isolated_dwelling||ad.farm||''};}
 function fromPho(f){const p=f.properties||{},c=f.geometry.coordinates;const st=p.street||p.name||'';
