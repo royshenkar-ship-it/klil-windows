@@ -64,28 +64,45 @@ li{margin-bottom:4px}
 .sg{padding:9px 10px;border-bottom:1px solid var(--line);cursor:pointer;font-size:14px}
 .sg:last-child{border-bottom:0}
 .sg:active,.sg:hover{background:#eef4fb}
+
+.mode{display:flex;background:rgba(255,255,255,.12);border-radius:10px;padding:3px;margin-top:10px;max-width:320px}
+.mode button{flex:1;border:0;background:transparent;color:#fff;padding:7px 8px;border-radius:8px;font-size:14px;cursor:pointer}
+.mode button.on{background:#fff;color:#13233a;font-weight:700}
+body.sales .eng-only{display:none!important}
+body.eng .sales-only{display:none!important}
+.plain{font-size:15px;margin:2px 0 10px;line-height:1.5}
+.gcards{display:grid;gap:8px;margin-top:10px}
+.gcard{border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.gcard .t{font-size:13px;color:var(--mut)}
+.gcard .c{font-size:19px;font-weight:700}
+.gcard .w{text-align:center;min-width:72px}
+.gcard .w b{font-size:19px;display:block}
+.gcard.off{opacity:.55;background:#f7f8fa}
+.gcard.best{border-color:#9fd3b0;background:var(--okbg)}
+.empty{border:1px dashed var(--line);border-radius:10px;padding:14px;text-align:center;color:var(--mut);font-size:14px;margin-top:10px}
 </style>
 </head>
 <body>
 <header>
-<h1>דרגת חלון (ת"י 1068) ועובי זכוכית (ת"י 1099) לפי כתובת וקומה</h1>
-<p>חלונות ודלתות אלומיניום · ת"י 414 (2023), 1068-1 ג"ת 6, 1099-1.1 + ג"ת 1, 1099-1.2 · גרסה 0.4 לבדיקה פנימית</p>
+<h1>קליל - דרגת חלון לפי כתובת</h1>
+<div class="mode" role="tablist"><button id="mSales" type="button">מכירות</button><button id="mEng" type="button">הנדסה</button></div>
 </header>
 <main>
 
 <div class="card">
-<h2>1. כתובת וקומה</h2>
+<h2>כתובת וקומה</h2>
 <div class="row">
  <div style="flex:3;position:relative"><label for="addr">כתובת</label><input id="addr" placeholder='לדוגמה: הנשיא 48 הרצליה' enterkeyhint="search" autocomplete="off"><div id="sugg" class="sugg"></div></div>
- <div style="flex:1;min-width:70px"><label for="floor">קומה</label><input id="floor" type="number" inputmode="numeric" value="3" min="0" max="80"></div>
+ <div style="flex:1;min-width:70px;align-self:flex-start"><label for="floor">קומה</label><input id="floor" type="number" inputmode="numeric" value="3" min="0" max="80"></div>
 </div>
+<p class="note" style="margin:4px 0 0">קרקע = 0</p>
 <div class="row" style="margin-top:10px;justify-content:flex-start">
  <button class="btn" id="go" type="button">חשב</button>
  <span id="geostat" class="note" style="align-self:center"></span>
 </div>
 <div id="locbox" class="note" style="margin-top:8px"></div>
-<details style="margin-top:10px"><summary>הגדרות מתקדמות (לא חובה)</summary>
-<div class="g2" style="margin-top:8px">
+<div class="eng-only" style="margin-top:12px">
+<div class="g2">
  <div><label for="terr">דרגת חספוס פני השטח</label>
  <select id="terr">
   <option value="auto" selected>אוטומטי לפי המיקום</option>
@@ -101,48 +118,52 @@ li{margin-bottom:4px}
  <div><label for="fh">גובה קומה (מ')</label><input id="fh" type="number" step="0.1" value="3.0"></div>
  <div><label for="cpi">לחץ פנימי c<sub>pi</sub></label><select id="cpi"><option value="0.2" selected>+0.2 (רגיל)</option><option value="0.65">+0.65 (פתחים גדולים)</option></select></div>
  <div><label for="unc">אזור אי-ודאות (×1.15 על v<sub>b</sub>)</label><select id="unc"><option value="1">לא להחיל</option><option value="1.15">להחיל</option></select></div>
-</div></details>
+</div></div>
 <div id="vbwarn"></div>
 </div>
 
 <div class="card">
-<h2>2. דרגת החלון הנדרשת (ת"י 1068)</h2>
+<h2>דרגת החלון הנדרשת</h2>
 <div class="hero">
- <div class="badge"><span>דרגה</span><b id="cls">-</b></div>
+ <div class="badge"><span>ת"י 1068</span><b id="cls">-</b></div>
  <div class="scale" id="scale"></div>
 </div>
-<div class="kpis">
- <div class="kpi"><div class="l">סימון נדרש (1068-2)</div><div class="v"><span class="n" id="mark">-</span></div></div>
+<p class="plain" id="plain"></p>
+<div class="kpis eng-only">
  <div class="kpi"><div class="l">לחץ רוח שירות W</div><div class="v"><span class="n" id="W">-</span></div></div>
  <div class="kpi"><div class="l">לחץ בדיקה W1 = 1.5W</div><div class="v"><span class="n" id="W1">-</span></div></div>
  <div class="kpi"><div class="l">גובה חישוב z</div><div class="v"><span class="n" id="z">-</span></div></div>
+ <div class="kpi"><div class="l">מהירות רוח v<sub>b</sub></div><div class="v"><span class="n" id="vbk">-</span></div></div>
 </div>
-<div id="envnote" class="note" style="margin-top:8px"></div>
+<div id="envnote" class="note eng-only" style="margin-top:8px"></div>
 <div id="hwarn"></div>
-<details style="margin-top:8px"><summary>פירוט החישוב</summary><div id="det" class="note" style="margin-top:6px"></div></details>
+<details class="eng-only" style="margin-top:8px" open><summary>פירוט החישוב</summary><div id="det" class="note" style="margin-top:6px"></div></details>
 </div>
 
 <div class="card">
-<h2>3. עובי ומשקל זכוכית (ת"י 1099)</h2>
+<h2>זכוכית ומשקל</h2>
 <div class="g2">
- <div><label for="gw">רוחב השמשה (מ"מ)</label><input id="gw" type="number" inputmode="numeric" value="1200"></div>
- <div><label for="gh">גובה השמשה (מ"מ)</label><input id="gh" type="number" inputmode="numeric" value="1500"></div>
- <div><label for="gt">סוג הזכוכית (חוזק)</label><select id="gt"><option value="AN">רגילה - לא מחוסמת</option><option value="HS">מחוזקת בחום (חצי-חיסום)</option><option value="FT">מחוסמת (טמפרד)</option></select>
- <div class="note" style="margin-top:3px">רגילה = הזכוכית הפשוטה (בתקן "רפויה"). מחוסמת = עברה חיסום בתנור, חזקה פי ~4 ונשברת לפירורים. מחוזקת בחום = ביניים, פי ~2. טריפלקס/בידודית נבחרים בטבלה למטה.</div></div>
- <div><label for="haz">מיקום השמשה</label>
- <select id="haz"><option value="0">רגיל</option><option value="1">בדלת / צד דלת, עד 1500 מ"מ</option><option value="2">עד 800 מ"מ מהרצפה</option></select></div>
- <div><label for="sashmax">משקל כנף מותר במערכת (ק"ג) - רשות</label><input id="sashmax" type="number" inputmode="numeric" placeholder="למשל 120"></div>
+ <div><label for="gw">רוחב השמשה (מ"מ)</label><input id="gw" type="number" inputmode="numeric" placeholder="למשל 1200"></div>
+ <div><label for="gh">גובה השמשה (מ"מ)</label><input id="gh" type="number" inputmode="numeric" placeholder="למשל 1500"></div>
+</div>
+<div style="margin-top:10px"><label for="haz">איפה השמשה?</label>
+ <select id="haz"><option value="0">חלון רגיל</option><option value="1">בדלת או לידה (עד גובה 1.5 מ')</option><option value="2">נמוכה - עד 80 ס"מ מהרצפה</option></select></div>
+<div class="g2 eng-only" style="margin-top:10px">
+ <div><label for="gt">סוג הזכוכית (חוזק)</label><select id="gt"><option value="AN">רגילה / רפויה - Annealed (AN)</option><option value="HS">מחוזקת בחום - Heat-Strengthened (HS)</option><option value="FT">מחוסמת - Fully Tempered (FT)</option></select></div>
  <div><label for="f175">כפף מסגרת ≤ L/175 הוכח?</label><select id="f175"><option value="0">לא / לא ידוע (×1.06)</option><option value="1">כן</option></select></div>
+ <div><label for="sashmax">משקל כנף מותר במערכת (ק"ג)</label><input id="sashmax" type="number" inputmode="numeric" placeholder="רשות"></div>
 </div>
 <div id="haznote"></div>
-<p class="note" id="gload" style="margin:10px 0 0"></p>
-<div id="fams"></div>
+<div id="gempty" class="empty">כדי לקבל המלצת זכוכית ומשקל - להזין רוחב וגובה של השמשה</div>
+<div id="cards" class="gcards sales-only"></div>
+<p class="note eng-only" id="gload" style="margin:10px 0 0"></p>
+<div id="fams" class="eng-only"></div>
 <div class="row" style="margin-top:12px;justify-content:flex-start">
- <button class="btn" id="copy" type="button">העתק סיכום</button><span id="copied" class="note" style="align-self:center"></span>
+ <button class="btn" id="share" type="button">שתף תוצאה</button><span id="copied" class="note" style="align-self:center"></span>
 </div>
 </div>
 
-<div class="card note">
+<div class="card note eng-only">
 <b>הנחות ומגבלות</b>
 <ul>
 <li><b>מיקום ומהירות רוח:</b> הכתובת מאותרת דרך OpenStreetMap (Nominatim, דרך החיבור Firecrawl). v<sub>b</sub> נלקח ממפת ת"י 414 (ציורי NA.3, 2022) שעברה דיגיטציה ברזולוציה של 250 מ', בתוספת ביטחון של עד 1 מ'/ש' (לא מעבר לגבול העליון של תחום הצבע). בבדיקה מול GovMap ב-16 נקודות: תמיד ≥ הערך ב-GovMap, בממוצע +0.6 מ'/ש'. אפשר לדרוס ידנית בהגדרות המתקדמות.</li>
@@ -260,7 +281,7 @@ async function useHit(hit){
  LOC={...g,terr,terrWhy,name:hit.label,x,y};
  $('geostat').textContent='';
  const gm=`https://www.govmap.gov.il/?c=${Math.round(x)},${Math.round(y)}&z=8&lay=154,152`;
- $('locbox').innerHTML=`📍 <b>${hit.label}</b><br>v<sub>b</sub> = <b class="n">${g.vb.toFixed(1)} m/s</b> (מפת ת"י 414, ערך מחמיר) · <a href="${gm}" target="_blank" rel="noopener">לבדיקה ב-GovMap ↗</a>${hit.approx?'<br><span class="warn">נמצא הרחוב/האזור ולא מספר הבית - הדיוק ברמת הרחוב. לוודא שזה המקום הנכון.</span>':''}`;
+ $('locbox').innerHTML=`📍 <b>${hit.label}</b><span class="eng-only"><br>v<sub>b</sub> = <b class="n">${g.vb.toFixed(1)} m/s</b> (מפת ת"י 414, ערך מחמיר) · <a href="${gm}" target="_blank" rel="noopener">לבדיקה ב-GovMap ↗</a></span>${hit.approx?'<br><span class="warn">נמצא הרחוב/האזור ולא מספר הבית - הדיוק ברמת הרחוב. לוודא שזה המקום הנכון.</span>':''}`;
 }
 async function run(){
  const q=$('addr').value.trim(); if(!q){$('geostat').textContent='יש להזין כתובת';return;}
@@ -300,8 +321,8 @@ function calc(){
  if(isFinite(man)&&man>0){vb0=man;src='ידני';} else if(LOC&&LOC.vb){vb0=LOC.vb;src='מפת ת"י 414';}
  const tsel=$('terr').value; const c = tsel==='auto' ? (LOC?LOC.terr:3) : +tsel;
  if(vb0==null){
-   ['cls','W','W1','z','mark'].forEach(id=>$(id).textContent='-'); $('scale').innerHTML=''; $('fams').innerHTML=''; $('gload').innerHTML='';
-   $('det').innerHTML=''; $('envnote').innerHTML='';
+   ['cls','W','W1','z','vbk'].forEach(id=>$(id).textContent='-'); $('scale').innerHTML=''; $('fams').innerHTML=''; $('cards').innerHTML=''; $('gload').innerHTML=''; $('plain').innerHTML='';
+   $('det').innerHTML=''; $('envnote').innerHTML=''; $('hwarn').innerHTML=''; SUMMARY='';
    $('vbwarn').innerHTML=''; return; }
  const vb=vb0*uncF;
  $('vbwarn').innerHTML=(vb<21||vb>40)?`<div class="alert">ערך v<sub>b</sub> חריג - לבדוק מול GovMap.</div>`:'';
@@ -314,16 +335,22 @@ function calc(){
  else if(LOC&&LOC.red<=3){envc=4; envwhy='קרבת ים באטמוספרה יבשה (אילת): 4';}
  else {envc=4; envwhy='עירוני/תעשייתי קל: 4 (באזור כפרי/חקלאי ללא תעשייה ורחוק מהים אפשר 3)';}
  const markS = fin==='paintS'?'ש':'';
- $('mark').textContent=envc+C+markS;
  $('envnote').innerHTML=`סימון: ספרה = דרגת סביבה ${envc} (${envwhy}); אות = דרגת עמידות ברוח${markS?'; ש = צבע בעמידות משופרת':''}.`;
  let uncTxt='';
- if(LOC&&LOC.unc&&uncF===1){const W15=(1.3*1.2+cpi)*(vb*1.15)**2/1.6*e; uncTxt=`<div class="alert">המיקום באזור אי-ודאות במפה (טופוגרפיה מורכבת) - המהירות בפועל עשויה להיות גבוהה עד 15%. אם מחילים ×1.15: W = ${fmt0(W15)} Pa, דרגה ${cls(W15)}.</div>`;}
- $('cls').textContent=C;$('W').textContent=fmt0(W)+' Pa';$('W1').textContent=fmt0(1.5*W)+' Pa';$('z').textContent=z.toFixed(1)+' m';
- $('hwarn').innerHTML=uncTxt+(z>100?`<div class="alert bad">גובה מעל 100 מ' - נדרש קונסטרוקטור.</div>`:'');
+ if(LOC&&LOC.unc&&uncF===1){const W15=(1.3*1.2+cpi)*(vb*1.15)**2/1.6*e; uncTxt=`<div class="alert"><b>מומלץ לבדוק עם מהנדס:</b> המיקום באזור אי-ודאות במפה (טופוגרפיה מורכבת) - המהירות בפועל עשויה להיות גבוהה עד 15%. אם מחילים ×1.15: W = ${fmt0(W15)} Pa, דרגה ${cls(W15)}.</div>`;}
+ const MARK=envc+C+markS; $('cls').textContent=MARK; $('vbk').textContent=vb.toFixed(1)+' m/s';
+ const cmax=(CLASSES.find(x=>x[0]===C)||[C,Math.ceil(W/50)*50])[1];
+ $('plain').innerHTML=`החלון צריך לעמוד בלחץ רוח של <b class="n">${fmt0(cmax)} Pa</b> לפחות (דרגה <b>${C}</b>)${envc===5?', בסביבה קורוזיבית חמורה (5)':envc===4?', בסביבה קורוזיבית בינונית (4)':''}${markS?', צבע בעמידות משופרת (ש)':''}.`;
+$('W').textContent=fmt0(W)+' Pa';$('W1').textContent=fmt0(1.5*W)+' Pa';$('z').textContent=z.toFixed(1)+' m';
+ $('hwarn').innerHTML=uncTxt+(z>100?`<div class="alert bad">בניין מעל 100 מ' - חובה לפנות לקונסטרוקטור.</div>`:'');
  $('det').innerHTML=`v<sub>b</sub> = ${vb.toFixed(1)} מ'/ש' (${src}${uncF>1?' × 1.15':''}) · q<sub>b</sub> = v<sub>b</sub>²/1.6 = <span class="n">${fmt0(qb)} Pa</span><br>דרגת חספוס ${['0','I','II','III','IV'][c]}${tsel==='auto'&&LOC?' ('+LOC.terrWhy+')':''} · c<sub>e</sub>(z=${z.toFixed(1)} m) = ${e.toFixed(3)}<br>W = (1.3×1.2 + ${cpi}) × ${fmt0(qb)} × ${e.toFixed(3)} = <span class="n">${fmt0(W)} Pa</span>`;
  $('scale').innerHTML=CLASSES.map(([k,v])=>`<div class="${k===C?'on':(W<=v?'pass':'')}">${k}<small>${v}</small></div>`).join('')+`<div class="${C[0]==='H'?'on':''}">H<small>3000+</small></div>`;
  // glass
  const gw=+$('gw').value,gh=+$('gh').value,gt=$('gt').value,haz=+$('haz').value,f175=+$('f175').value,smax=+$('sashmax').value||0;
+ const glassOK = gw>=100 && gh>=100;
+ $('gempty').style.display = glassOK?'none':'';
+ if(!glassOK){ $('fams').innerHTML=''; $('cards').innerHTML=''; $('gload').innerHTML=''; $('haznote').innerHTML='';
+   SUMMARY=`דרגת חלון נדרשת (ת"י 1068): ${MARK}\nכתובת: ${LOC?LOC.name:addr||'-'} · קומה ${fl}\nלחץ רוח: ${fmt0(W)} Pa\n(מינימום לפי תקן - כלי קליל)`; return; }
  const q=Math.max(W,600)*(f175?1:1.06); const area=gw*gh/1e6; const lim=Math.min(gw,gh)/75;
  $('gload').innerHTML=`עומס תכן לזכוכית: <b class="n">${fmt0(q)} Pa</b> · שטח שמשה ${area.toFixed(2)} מ"ר · כפף מומלץ ≤ ${lim.toFixed(0)} מ"מ`;
  $('haznote').innerHTML = haz? `<div class="alert">אזור סכנה (1099-1.1 פרק ג): נדרשת זכוכית בטיחות סוג B לפחות (רבודה או מחוסמת) בצד הנגיש - בבידודית בדרך כלל הלוח הפנימי; בקומת קרקע עם גישה משני הצדדים - שני הלוחות. חריג: מידה קטנה ≤ 250 מ"מ ושטח ≤ 0.5 מ"ר - 6 מ"מ לפחות.${haz==1?'<br>בדלת במכלל חוץ חשוף: רבודה ≥ 8 מ"מ (בודדת) / ≥ 6 מ"מ (בבידודית); מחוסמת ≥ 6 / ≥ 4.':''}</div>`:'';
@@ -331,27 +358,31 @@ function calc(){
  function buildFams(gt){
   const fams=[];
  // IG symmetric
- fams.push({title:'בידודית', safe: !haz||safeT, why:'זכוכית רגילה/מחוזקת אינה זכוכית בטיחות',
+ fams.push({title:'בידודית', en:'IGU', safe: !haz||safeT, why:'זכוכית רגילה/מחוזקת אינה זכוכית בטיחות',
   c:[4,5,6,8,10,12,15].map(t=>{const n=nfl(t,gw,gh);const g=GTF_IG[gt][gt];const lr=n==null?null:n*g[0]/0.5;
    return {name:`${t} + מרווח + ${t}`,lr,kg:wkg(2*t,0),d:defl(t,gw,gh,W*0.5)};})});
- fams.push({title:'טריפלקס (רבודה, PVB 0.76)', safe:true,
+ fams.push({title:'טריפלקס (רבודה, PVB 0.76)', en:'LG', safe:true,
   c:[3,4,5,6,8,10].map(t=>{const d=lgDesig(t,t,0.76);const n=nfl(d,gw,gh);
    return {name:`${t}${t}.2`,sub:`${t}+0.76+${t} · שקול ${d}`,lr:n==null?null:n*GTF1[gt],kg:wkg(2*t,1),d:defl(d,gw,gh,W)};})});
- fams.push({title:'בידודית עם טריפלקס פנימי', safe:true,
+ fams.push({title:'בידודית עם טריפלקס פנימי', en:'IGU + LG', safe:true,
   c:[[4,3],[4,4],[5,4],[6,4],[6,5],[8,5],[8,6],[10,6],[10,8],[12,8],[12,10]].map(([to,ti])=>{const d=lgDesig(ti,ti,0.76);const n1=nfl(to,gw,gh),n2=nfl(d,gw,gh);
    const t1=MIN[to]**3,t2=MIN[d]**3,l1=t1/(t1+t2),l2=t2/(t1+t2);const g=GTF_IG[gt][gt];
    const lr=(n1==null||n2==null)?null:Math.min(n1*g[0]/l1,n2*g[1]/l2);
    return {name:`${to} + מרווח + ${ti}${ti}.2`,sub:`טריפלקס שקול ${d}`,lr,kg:wkg(to+2*ti,1),d:Math.max(defl(to,gw,gh,W*l1),defl(d,gw,gh,W*l2))};})});
   return fams;}
  const fams=buildFams(gt); const famsFT=gt==='FT'?null:buildFams('FT');
- let html='', sum=[];
+ let html='', sum=[], cards='';
  fams.forEach((f,fi)=>{
   const i=f.c.findIndex(x=>x.lr!=null&&x.lr>=q);
   let alt='';
   if(famsFT){const g=famsFT[fi];const j=g.c.findIndex(x=>x.lr!=null&&x.lr>=q&&x.d<=lim);if(j>=0&&(i<0||g.c[j].kg<f.c[i].kg)) alt=`<div class="opt"><div class="note" style="grid-column:1/-1">בזכוכית מחוסמת (כולל כפף ≤ L/75): <b>${g.c[j].name}</b> · ${(g.c[j].kg*area).toFixed(1)} ק"ג</div></div>`;}
   const mi=i>=0?f.c[i]:null;
   const head=!f.safe?`<span class="bad">לא מתאים - ${f.why}</span>`:(mi?`<span class="res">${mi.name} · ${(mi.kg*area).toFixed(0)} ק"ג</span>`:`<span class="bad">אין הרכב מתאים בטווח</span>`);
-  html+=`<div class="fam"><h3><span>${f.title}</span>${head}</h3>`;
+  { const ttl=f.title.replace(' (רבודה, PVB 0.76)','');
+    if(!f.safe) cards+=`<div class="gcard off"><div><div class="t">${ttl}</div><div class="c">לא מתאים</div><div class="note">במיקום הזה נדרשת זכוכית בטיחות</div></div></div>`;
+    else if(!mi) cards+=`<div class="gcard off"><div><div class="t">${ttl}</div><div class="c">אין הרכב מתאים</div><div class="note">${f.c.every(x=>x.lr==null)?'מידה מחוץ לטווח החישוב':'לפנות להנדסה'}</div></div></div>`;
+    else cards+=`<div class="gcard"><div><div class="t">${ttl}</div><div class="c">${mi.name.replace(' + מרווח + ',' + ')}</div><div class="note">${mi.kg.toFixed(1)} ק"ג למ"ר${smax&&mi.kg*area>smax?' · <span class="bad">מעל משקל הכנף המותר</span>':''}</div></div><div class="w"><b class="n">${(mi.kg*area).toFixed(0)}</b><span class="note">ק"ג לשמשה</span></div></div>`; }
+  html+=`<div class="fam"><h3><span>${f.title}${f.en?' <span class="note n">'+f.en+'</span>':''}</span>${head}</h3>`;
   if(i<0){html+=`<div class="opt"><div class="note" style="grid-column:1/-1">${f.c.every(x=>x.lr==null)?'מידות השמשה מחוץ לטווח החישוב (צלע קצרה 300-3000, ארוכה עד 5000 מ"מ, יחס עד 1:5).':'אף הרכב לא עומד בעומס - לשקול זכוכית מחוסמת/מחוזקת, חלוקת השמשה או מתכנן.'}</div></div>`+alt+'</div>';sum.push(`${f.title}: אין הרכב מתאים`);return;}
   html+=`<div class="opt hd"><div>הרכב</div><div>עמידות / נדרש<br>(kPa)</div><div>כפף (מ"מ)</div><div>משקל שמשה</div></div>`;
   for(const x of f.c.slice(Math.max(0,i-1),i+2)){
@@ -363,10 +394,18 @@ function calc(){
   html+=alt+'</div>';
   sum.push(`${f.title}: ${!f.safe?'לא מתאים (בטיחות)':mi.name+' - '+(mi.kg*area).toFixed(1)+' ק"ג ('+mi.kg.toFixed(1)+' ק"ג/מ"ר)'}`);
  });
- $('fams').innerHTML=html;
- SUMMARY=`סימון נדרש ת"י 1068: ${envc}${C}${markS}\nכתובת: ${LOC?LOC.name:addr||'-'} · קומה ${fl} · v_b=${vb.toFixed(1)} מ'/ש' (${src}) · חספוס ${['0','I','II','III','IV'][c]}\nW=${fmt0(W)} Pa · W1=${fmt0(1.5*W)} Pa · z=${z.toFixed(1)} m\nשמשה ${gw}×${gh} מ"מ, ${GNAME[gt]} · עומס תכן ${fmt0(q)} Pa\n`+sum.join('\n')+`\n(מינימום לפי ת"י 414/1068/1099 - כלי פנימי קליל, גרסה 0.4)`;
+ $('fams').innerHTML=html; $('cards').innerHTML=cards+`<div class="note">הסבר: בבידודית - זכוכית חוץ + זכוכית פנים, עם מרווח אוויר ביניהן. 33.2 = טריפלקס משתי זכוכיות של 3 מ"מ עם שכבת PVB. ${gt==='AN'?'כל הזכוכיות רגילות (לא מחוסמות).':''} המשקל - זכוכית בלבד, בלי פרופילים ופרזול.</div>`;
+ SUMMARY=`דרגת חלון נדרשת (ת"י 1068): ${MARK}\nכתובת: ${LOC?LOC.name:addr||'-'} · קומה ${fl} · v_b=${vb.toFixed(1)} מ'/ש' (${src}) · חספוס ${['0','I','II','III','IV'][c]}\nW=${fmt0(W)} Pa · W1=${fmt0(1.5*W)} Pa · z=${z.toFixed(1)} m\nשמשה ${gw}×${gh} מ"מ, ${GNAME[gt]} · עומס תכן ${fmt0(q)} Pa\n`+sum.join('\n')+`\n(מינימום לפי ת"י 414/1068/1099 - כלי פנימי קליל, גרסה 0.5)`;
 }
-$('copy').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(SUMMARY);$('copied').textContent='הועתק';}catch(e){$('copied').textContent='ההעתקה נחסמה בדפדפן';}setTimeout(()=>$('copied').textContent='',2500);});
+$('share').addEventListener('click',async()=>{ if(!SUMMARY){$('copied').textContent='קודם לחשב';return;}
+ const text=SUMMARY+'\n'+location.href.split('#')[0];
+ try{ if(navigator.share){ await navigator.share({title:'דרגת חלון - קליל',text}); return; } }catch(e){ if(e&&e.name==='AbortError') return; }
+ try{ await navigator.clipboard.writeText(text); $('copied').textContent='הועתק - אפשר להדביק בוואטסאפ'; }catch(e){ $('copied').textContent='לא ניתן לשתף מכאן'; }
+ setTimeout(()=>$('copied').textContent='',3000);});
+// ---- mode (sales / engineering) ----
+function setMode(m){ document.body.className=m; $('mSales').classList.toggle('on',m==='sales'); $('mEng').classList.toggle('on',m==='eng'); try{localStorage.setItem('wcMode',m);}catch(e){} }
+$('mSales').addEventListener('click',()=>setMode('sales')); $('mEng').addEventListener('click',()=>setMode('eng'));
+(function(){ let m='sales'; try{ m=localStorage.getItem('wcMode')||'sales'; }catch(e){} if(location.hash==='#eng') m='eng'; if(location.hash==='#sales') m='sales'; setMode(m); })();
 document.querySelectorAll('input,select').forEach(e=>{if(e.id!=='addr') e.addEventListener('input',calc);});
 $('go').addEventListener('click',run);
 $('addr').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();run();}});
