@@ -285,7 +285,7 @@ async function useHit(hit){
 }
 async function run(){
  const q=$('addr').value.trim(); if(!q){$('geostat').textContent='יש להזין כתובת';return;}
- $('sugg').innerHTML='';
+ clearTimeout(SUGT); SUGSEQ++; $('sugg').innerHTML='';
  $('geostat').textContent='מאתר כתובת...'; $('go').disabled=true;
  try{
   const hit = (PICK&&PICK.q===q) ? PICK.hit : await geocode(q);
