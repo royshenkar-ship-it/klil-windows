@@ -59,19 +59,24 @@ details summary{cursor:pointer;color:var(--acc);font-size:13.5px}
 ul{padding-inline-start:18px;margin:6px 0}
 li{margin-bottom:4px}
 @media (max-width:480px){.badge{min-width:76px;height:76px}.badge b{font-size:28px}.opt{grid-template-columns:1.5fr 1fr 1fr .9fr}}
+.sugg{position:absolute;inset-inline:0;top:100%;z-index:10;background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.08);overflow:hidden}
+.sugg:empty{display:none}
+.sg{padding:9px 10px;border-bottom:1px solid var(--line);cursor:pointer;font-size:14px}
+.sg:last-child{border-bottom:0}
+.sg:active,.sg:hover{background:#eef4fb}
 </style>
 </head>
 <body>
 <header>
 <h1>דרגת חלון (ת"י 1068) ועובי זכוכית (ת"י 1099) לפי כתובת וקומה</h1>
-<p>חלונות ודלתות אלומיניום · ת"י 414 (2023), 1068-1 ג"ת 6, 1099-1.1 + ג"ת 1, 1099-1.2 · גרסה 0.3 לבדיקה פנימית</p>
+<p>חלונות ודלתות אלומיניום · ת"י 414 (2023), 1068-1 ג"ת 6, 1099-1.1 + ג"ת 1, 1099-1.2 · גרסה 0.4 לבדיקה פנימית</p>
 </header>
 <main>
 
 <div class="card">
 <h2>1. כתובת וקומה</h2>
 <div class="row">
- <div style="flex:3"><label for="addr">כתובת</label><input id="addr" placeholder='לדוגמה: קק"ל 1 כרמיאל' enterkeyhint="search"></div>
+ <div style="flex:3;position:relative"><label for="addr">כתובת</label><input id="addr" placeholder='לדוגמה: הנשיא 48 הרצליה' enterkeyhint="search" autocomplete="off"><div id="sugg" class="sugg"></div></div>
  <div style="flex:1;min-width:70px"><label for="floor">קומה</label><input id="floor" type="number" inputmode="numeric" value="3" min="0" max="80"></div>
 </div>
 <div class="row" style="margin-top:10px;justify-content:flex-start">
@@ -122,7 +127,8 @@ li{margin-bottom:4px}
 <div class="g2">
  <div><label for="gw">רוחב השמשה (מ"מ)</label><input id="gw" type="number" inputmode="numeric" value="1200"></div>
  <div><label for="gh">גובה השמשה (מ"מ)</label><input id="gh" type="number" inputmode="numeric" value="1500"></div>
- <div><label for="gt">מין הזכוכית</label><select id="gt"><option value="AN">רפויה (רגילה)</option><option value="HS">מחוזקת בחום</option><option value="FT">מחוסמת</option></select></div>
+ <div><label for="gt">סוג הזכוכית (חוזק)</label><select id="gt"><option value="AN">רגילה - לא מחוסמת</option><option value="HS">מחוזקת בחום (חצי-חיסום)</option><option value="FT">מחוסמת (טמפרד)</option></select>
+ <div class="note" style="margin-top:3px">רגילה = הזכוכית הפשוטה (בתקן "רפויה"). מחוסמת = עברה חיסום בתנור, חזקה פי ~4 ונשברת לפירורים. מחוזקת בחום = ביניים, פי ~2. טריפלקס/בידודית נבחרים בטבלה למטה.</div></div>
  <div><label for="haz">מיקום השמשה</label>
  <select id="haz"><option value="0">רגיל</option><option value="1">בדלת / צד דלת, עד 1500 מ"מ</option><option value="2">עד 800 מ"מ מהרצפה</option></select></div>
  <div><label for="sashmax">משקל כנף מותר במערכת (ק"ג) - רשות</label><input id="sashmax" type="number" inputmode="numeric" placeholder="למשל 120"></div>
@@ -162,7 +168,7 @@ const MIN = {3:2.92,4:3.78,5:4.57,6:5.56,8:7.42,10:9.02,12:11.91,15:14.50,19:18.
 const NOMS=[3,4,5,6,8,10,12,15,19];
 const GTF1={AN:1.0,HS:2.0,FT:4.0};
 const GTF_IG={AN:{AN:[0.9,0.9]},HS:{HS:[1.8,1.8]},FT:{FT:[3.6,3.6]}};
-const GNAME={AN:'רפויה',HS:'מחוזקת בחום',FT:'מחוסמת'};
+const GNAME={AN:'רגילה (רפויה)',HS:'מחוזקת בחום',FT:'מחוסמת'};
 const $=id=>document.getElementById(id);
 const fmt0=v=>Math.round(v).toLocaleString('en-US');
 function ce(z,c){const [z0,zmin]=TER[c];const kr=0.19*Math.pow(z0/0.05,0.07);const l=Math.log(Math.max(z,zmin)/z0);const cr=kr*l;return (1+7/l)*cr*cr;}
@@ -209,44 +215,61 @@ function toITM(lat,lon){const a=6378137.0,f=1/298.257222101,e2=f*(2-f),ep2=e2/(1
  const x=FE+k0*N*(A+(1-T+C)*A**3/6+(5-18*T+T*T+72*C-58*ep2)*A**5/120);
  const y=FN+k0*(M(ph)-M(lat0)+N*Math.tan(ph)*(A*A/2+(5-T+9*C+4*C*C)*A**4/24+(61-58*T+T*T+600*C-330*ep2)*A**6/720));
  return [x,y];}
-async function geocode(q){
- const url='https://nominatim.openstreetmap.org/search?format=json&limit=1&addressdetails=1&countrycodes=il&accept-language=he&q='+encodeURIComponent(q);
- // 1) direct (works when the page is hosted anywhere outside claude.ai - any phone, any browser)
- try{
-  const r=await fetch(url,{headers:{'Accept':'application/json'}});
-  if(r.ok){const arr=await r.json(); return arr&&arr[0]?arr[0]:null;}
- }catch(e){/* blocked by sandbox CSP inside claude.ai -> fall back to connector */}
- // 2) inside claude.ai: through the viewer's Firecrawl connector
+async function fetchJSON(url, allowMcp=true){
+ try{ const r=await fetch(url,{headers:{'Accept':'application/json'}}); if(r.ok) return await r.json(); }catch(e){}
+ if(!allowMcp) return null;
  if(!MCP&&MCPP){try{MCP=await MCPP;}catch(e){}}
  if(!MCP) throw {code:'no_mcp'};
  const r=await MCP.callTool('Firecrawl','firecrawl_scrape',{url,formats:['rawHtml'],maxAge:604800000,objective:'Geocode an Israeli address for a window wind-load calculator'},{cache:{staleTime:604800000,gcTime:604800000}});
  let p=r.payload; if(typeof p==='string'){try{p=JSON.parse(p);}catch(e){}}
  let raw=p&&(p.rawHtml||p.html||p.markdown); if(!raw&&r.content&&r.content[0]&&r.content[0].text){try{const t=JSON.parse(r.content[0].text);raw=t.rawHtml;}catch(e){raw=r.content[0].text;}}
- let arr; try{arr=JSON.parse(String(raw).replace(/^[^\[]*/,'').replace(/[^\]]*$/,''));}catch(e){arr=[];}
- return arr&&arr[0]?arr[0]:null;
+ const t=String(raw||''); const i=t.search(/[\[{]/); try{return JSON.parse(t.slice(i));}catch(e){return null;}
+}
+const NOM='https://nominatim.openstreetmap.org/search?format=json&limit=1&addressdetails=1&countrycodes=il&accept-language=he&q=';
+const PHO='https://photon.komoot.io/api/?limit=6&bbox=34.2,29.4,35.95,33.4&q=';
+function fromNom(h){const ad=h.address||{};return {lat:+h.lat,lon:+h.lon,label:h.display_name.split(',').slice(0,4).join(','),approx:h.class==='highway'||h.addresstype==='road'||!ad.house_number,
+ urban:ad.city||ad.town||'', rural:ad.village||ad.hamlet||ad.isolated_dwelling||ad.farm||''};}
+function fromPho(f){const p=f.properties||{},c=f.geometry.coordinates;const st=p.street||p.name||'';
+ const label=[(p.osm_key==='highway'&&p.street?p.street:(p.name&&p.name!==p.street?p.name+(p.street?' - '+p.street:''):st))+(p.housenumber?' '+p.housenumber:''), p.locality||p.district||'', p.city||''].filter(Boolean).join(', ');
+ const vill=/village|hamlet|isolated_dwelling|farm/.test(p.osm_value||'')||(!p.city&&(p.locality||p.name));
+ return {lat:c[1],lon:c[0],label,approx:!p.housenumber,urban:p.city||'',rural:vill&&!p.city?(p.name||p.locality||''):''};}
+async function photon(q,allowMcp){const j=await fetchJSON(PHO+encodeURIComponent(q),allowMcp);return j&&j.features?j.features.filter(f=>(f.properties||{}).countrycode==='IL'||!(f.properties||{}).countrycode).map(fromPho):[];}
+async function geocode(q){
+ let j=await fetchJSON(NOM+encodeURIComponent(q)); if(j&&j[0]&&j[0].address&&j[0].address.house_number) return fromNom(j[0]);
+ const nomHit=j&&j[0]?fromNom(j[0]):null;
+ let ph=[]; try{ph=await photon(q,true);}catch(e){}
+ const exact=ph.find(x=>!x.approx); if(exact) return exact;
+ if(nomHit) return nomHit;
+ if(ph[0]) return ph[0];
+ const noNum=q.replace(/\b\d+[א-ת]?\b/g,' ').replace(/\s+/g,' ').trim();
+ if(noNum!==q){j=await fetchJSON(NOM+encodeURIComponent(noNum)); if(j&&j[0]) return fromNom(j[0]); try{ph=await photon(noNum,true);}catch(e){} if(ph[0]) return ph[0];}
+ return null;
 }
 function autoTerr(hit,g){
- const ad=hit.address||{};
  if(g.sea<=0.5) return [0,`עד 500 מ' מקו החוף - חשוף לים`];
- if(ad.city||ad.town) return [3,`יישוב עירוני (${ad.city||ad.town}) - פרברי/עירוני, מחמיר מול IV`];
- if(ad.village||ad.hamlet||ad.isolated_dwelling||ad.farm) return [2,`יישוב כפרי (${ad.village||ad.hamlet||''}) - שטח פתוח`];
+ if(hit.urban) return [3,`יישוב עירוני (${hit.urban}) - פרברי/עירוני, מחמיר מול IV`];
+ if(hit.rural) return [2,`יישוב כפרי (${hit.rural}) - שטח פתוח`];
  return [2,'מחוץ ליישוב מוגדר - שטח פתוח'];
+}
+let PICK=null;
+async function useHit(hit){
+ if(!GRID) await loadGrid();
+ const [x,y]=toITM(hit.lat,hit.lon); const g=gridAt(x/1000,y/1000);
+ if(!g){LOC=null;$('geostat').textContent='המיקום מחוץ לתחום מפת הרוח של ת"י 414.';$('locbox').innerHTML='';return;}
+ const [terr,terrWhy]=autoTerr(hit,g);
+ LOC={...g,terr,terrWhy,name:hit.label,x,y};
+ $('geostat').textContent='';
+ const gm=`https://www.govmap.gov.il/?c=${Math.round(x)},${Math.round(y)}&z=8&lay=154,152`;
+ $('locbox').innerHTML=`📍 <b>${hit.label}</b><br>v<sub>b</sub> = <b class="n">${g.vb.toFixed(1)} m/s</b> (מפת ת"י 414, ערך מחמיר) · <a href="${gm}" target="_blank" rel="noopener">לבדיקה ב-GovMap ↗</a>${hit.approx?'<br><span class="warn">נמצא הרחוב/האזור ולא מספר הבית - הדיוק ברמת הרחוב. לוודא שזה המקום הנכון.</span>':''}`;
 }
 async function run(){
  const q=$('addr').value.trim(); if(!q){$('geostat').textContent='יש להזין כתובת';return;}
+ $('sugg').innerHTML='';
  $('geostat').textContent='מאתר כתובת...'; $('go').disabled=true;
  try{
-  if(!GRID) await loadGrid();
-  let hit=await geocode(q);
-  if(!hit && !/ישראל/.test(q)) hit=await geocode(q+' ישראל');
-  if(!hit){LOC=null;$('geostat').textContent='הכתובת לא נמצאה - לנסות ניסוח אחר (רחוב, מספר, עיר).';$('locbox').innerHTML='';calc();return;}
-  const [x,y]=toITM(+hit.lat,+hit.lon); const g=gridAt(x/1000,y/1000);
-  if(!g){LOC=null;$('geostat').textContent='המיקום מחוץ לתחום מפת הרוח של ת"י 414.';calc();return;}
-  const [terr,terrWhy]=autoTerr(hit,g);
-  LOC={...g,terr,terrWhy,name:hit.display_name,x,y};
-  $('geostat').textContent='';
-  const gm=`https://www.govmap.gov.il/?c=${Math.round(x)},${Math.round(y)}&z=8&lay=154,152`;
-  $('locbox').innerHTML=`📍 ${hit.display_name.split(',').slice(0,4).join(',')}<br>v<sub>b</sub> = <b class="n">${g.vb.toFixed(1)} m/s</b> (מפת ת"י 414, ערך מחמיר) · <a href="${gm}" target="_blank" rel="noopener">לבדיקה ב-GovMap ↗</a>${hit.class==='highway'||hit.addresstype==='road'?'<br><span class="warn">נמצא הרחוב ולא מספר הבית - הדיוק ברמת הרחוב.</span>':''}`;
+  const hit = (PICK&&PICK.q===q) ? PICK.hit : await geocode(q);
+  if(!hit){LOC=null;$('geostat').textContent='הכתובת לא נמצאה. לנסות: רחוב + מספר + עיר, או לבחור מהרשימה שנפתחת בזמן ההקלדה.';$('locbox').innerHTML='';return;}
+  await useHit(hit);
  }catch(err){
   LOC=null;
   const code=err&&err.code;
@@ -256,6 +279,17 @@ async function run(){
    : code==='approval_required'||code==='not_in_manifest' ? 'צריך לאשר לעמוד שימוש ב-Firecrawl לאיתור הכתובת, ואז ללחוץ שוב "חשב".'
    : 'איתור הכתובת נכשל ('+(code||'שגיאה')+'). לנסות שוב, או להזין v<sub>b</sub> ידנית בהגדרות המתקדמות.';
  }finally{$('go').disabled=false; calc();}
+}
+// autocomplete suggestions while typing (direct only - works on the public site / phone)
+let SUGT=null, SUGSEQ=0;
+function onType(){
+ PICK=null; clearTimeout(SUGT); const q=$('addr').value.trim();
+ if(q.length<3){$('sugg').innerHTML='';return;}
+ SUGT=setTimeout(async()=>{const my=++SUGSEQ; let list=[]; try{list=await photon(q,false);}catch(e){}
+  if(my!==SUGSEQ) return;
+  $('sugg').innerHTML=list.slice(0,5).map((h,i)=>`<div class="sg" data-i="${i}">${h.label}</div>`).join('');
+  $('sugg').querySelectorAll('.sg').forEach(el=>el.addEventListener('click',()=>{const h=list[+el.dataset.i];PICK={q:h.label,hit:h};$('addr').value=h.label;$('sugg').innerHTML='';run();}));
+ },350);
 }
 let SUMMARY='';
 function calc(){
@@ -297,7 +331,7 @@ function calc(){
  function buildFams(gt){
   const fams=[];
  // IG symmetric
- fams.push({title:'בידודית', safe: !haz||safeT, why:'לוחות רפויים/מחוזקים אינם זכוכית בטיחות',
+ fams.push({title:'בידודית', safe: !haz||safeT, why:'זכוכית רגילה/מחוזקת אינה זכוכית בטיחות',
   c:[4,5,6,8,10,12,15].map(t=>{const n=nfl(t,gw,gh);const g=GTF_IG[gt][gt];const lr=n==null?null:n*g[0]/0.5;
    return {name:`${t} + מרווח + ${t}`,lr,kg:wkg(2*t,0),d:defl(t,gw,gh,W*0.5)};})});
  fams.push({title:'טריפלקס (רבודה, PVB 0.76)', safe:true,
@@ -330,12 +364,13 @@ function calc(){
   sum.push(`${f.title}: ${!f.safe?'לא מתאים (בטיחות)':mi.name+' - '+(mi.kg*area).toFixed(1)+' ק"ג ('+mi.kg.toFixed(1)+' ק"ג/מ"ר)'}`);
  });
  $('fams').innerHTML=html;
- SUMMARY=`סימון נדרש ת"י 1068: ${envc}${C}${markS}\nכתובת: ${LOC?LOC.name:addr||'-'} · קומה ${fl} · v_b=${vb.toFixed(1)} מ'/ש' (${src}) · חספוס ${['0','I','II','III','IV'][c]}\nW=${fmt0(W)} Pa · W1=${fmt0(1.5*W)} Pa · z=${z.toFixed(1)} m\nשמשה ${gw}×${gh} מ"מ, ${GNAME[gt]} · עומס תכן ${fmt0(q)} Pa\n`+sum.join('\n')+`\n(מינימום לפי ת"י 414/1068/1099 - כלי פנימי קליל, גרסה 0.3)`;
+ SUMMARY=`סימון נדרש ת"י 1068: ${envc}${C}${markS}\nכתובת: ${LOC?LOC.name:addr||'-'} · קומה ${fl} · v_b=${vb.toFixed(1)} מ'/ש' (${src}) · חספוס ${['0','I','II','III','IV'][c]}\nW=${fmt0(W)} Pa · W1=${fmt0(1.5*W)} Pa · z=${z.toFixed(1)} m\nשמשה ${gw}×${gh} מ"מ, ${GNAME[gt]} · עומס תכן ${fmt0(q)} Pa\n`+sum.join('\n')+`\n(מינימום לפי ת"י 414/1068/1099 - כלי פנימי קליל, גרסה 0.4)`;
 }
 $('copy').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(SUMMARY);$('copied').textContent='הועתק';}catch(e){$('copied').textContent='ההעתקה נחסמה בדפדפן';}setTimeout(()=>$('copied').textContent='',2500);});
 document.querySelectorAll('input,select').forEach(e=>{if(e.id!=='addr') e.addEventListener('input',calc);});
 $('go').addEventListener('click',run);
 $('addr').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();run();}});
+$('addr').addEventListener('input',onType);
 try{ if(window.claude&&window.claude.use){ MCPP=window.claude.use('mcp'); MCPP.then(m=>{MCP=m;}).catch(()=>{}); } }catch(e){}
 calc();
 </script>
