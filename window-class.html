@@ -80,14 +80,52 @@ body.eng .sales-only{display:none!important}
 .gcard.off{opacity:.55;background:#f7f8fa}
 .gcard.best{border-color:#9fd3b0;background:var(--okbg)}
 .empty{border:1px dashed var(--line);border-radius:10px;padding:14px;text-align:center;color:var(--mut);font-size:14px;margin-top:10px}
+
+.mode{max-width:420px}
+.form-only{display:none!important}
+body.form .form-only{display:block!important}
+body.form .no-form{display:none!important}
+.chk{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px;margin-top:4px}
+.chk label{display:flex;align-items:center;gap:4px;font-weight:400;margin:0}
+.chk input{width:auto;margin:0}
+.ftab{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}
+.ftab td{border-bottom:1px solid var(--line);padding:7px 4px;vertical-align:top}
+.ftab td:first-child{color:var(--mut);width:42%}
+.ck{display:inline-block;min-width:22px;font-weight:700}
+.ck.ok{color:#137a3a}.ck.bad{color:#b3261e}.ck.q{color:#a36a00}
+textarea{width:100%;box-sizing:border-box;font:inherit;padding:8px;border:1px solid var(--line);border-radius:8px;min-height:60px}
+@media print{header .mode,.btn,#sugg,.no-print{display:none!important} body{background:#fff} .card{break-inside:avoid;box-shadow:none;border:1px solid #ccc} details{display:block} details>summary{display:none}}
 </style>
 </head>
 <body>
 <header>
 <h1>קליל - דרגת חלון לפי כתובת</h1>
-<div class="mode" role="tablist"><button id="mSales" type="button">מכירות</button><button id="mEng" type="button">הנדסה</button></div>
+<div class="mode" role="tablist"><button id="mSales" type="button">מכירות</button><button id="mEng" type="button">הנדסה</button><button id="mForm" type="button">טופס פרויקט</button></div>
 </header>
 <main>
+
+<div class="card form-only">
+<h2>א. נתונים מהשטח</h2>
+<div class="g2">
+ <div><label for="fproj">שם הפרויקט</label><input id="fproj"></div>
+ <div><label for="fdate">תאריך</label><input id="fdate" type="date"></div>
+ <div><label for="frep">נציג קליל</label><input id="frep"></div>
+ <div><label for="finst">מתקין האלומיניום</label><input id="finst"></div>
+</div>
+<div class="note" style="margin-top:6px">כתובת, קומה וגובה מעל הקרקע - בכרטיס הבא.</div>
+<div class="g2" style="margin-top:8px">
+ <div><label for="fwid">רוחב הפתח (ס"מ)</label><input id="fwid" type="number" inputmode="decimal" placeholder="למשל 240"></div>
+ <div><label for="fhei">גובה הפתח (ס"מ)</label><input id="fhei" type="number" inputmode="decimal" placeholder="למשל 220"></div>
+ <div><label for="fsash">כמות כנפיים</label><select id="fsash"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>6</option></select></div>
+ <div><label for="ftrack">כמות נתיבים</label><select id="ftrack"><option>1</option><option selected>2</option><option>3</option><option>4</option></select></div>
+ <div><label for="fser">סדרה מבוקשת</label><select id="fser"><option value="7600">7600 - הזזה</option><option value="9400">9400 - הזזה</option><option value="2600">2600 - הרם-הזז</option><option value="7800">7800 - הזזה תרמי</option><option value="5600">5600 - ציר</option><option value="5800">5800 - ציר תרמי</option></select></div>
+ <div><label for="fglz">סוג זיגוג</label><select id="fglz"><option value="igu" selected>בידודית</option><option value="lg">טריפלקס</option><option value="mono">מונוליטי</option></select></div>
+ <div><label for="fnet">סוג רשת</label><select id="fnet"><option value="none">ללא רשת</option><option value="int">אינטגרלית</option><option value="rem">מורחקת</option><option value="plis">פליסה</option></select></div>
+</div>
+<label style="margin-top:8px">חומר טכני מצורף</label>
+<div class="chk"><label><input type="checkbox" class="fatt" value="תוכנית אדריכלית">תוכנית אדריכלית</label><label><input type="checkbox" class="fatt" value="שרטוט">שרטוט</label><label><input type="checkbox" class="fatt" value="תמונות">תמונות</label><label><input type="checkbox" class="fatt" value="סרטון">סרטון</label><label><input type="checkbox" class="fatt" value="אחר">אחר</label></div>
+<label for="fnote" style="margin-top:8px">הערות מהשטח</label><textarea id="fnote"></textarea>
+</div>
 
 <div class="card">
 <h2>כתובת וקומה</h2>
@@ -97,11 +135,11 @@ body.eng .sales-only{display:none!important}
  <div style="flex:1;min-width:80px;align-self:flex-start"><label for="nfl">קומות בבניין</label><select id="nfl"><option value="0" selected>לא ידוע</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option><option value="32">32</option><option value="33">33</option><option value="34">34</option><option value="35">35</option><option value="36">36</option><option value="37">37</option><option value="38">38</option><option value="39">39</option><option value="40">40</option><option value="41">41</option><option value="42">42</option><option value="43">43</option><option value="44">44</option><option value="45">45</option><option value="46">46</option><option value="47">47</option><option value="48">48</option><option value="49">49</option><option value="50">50</option><option value="51">51</option><option value="52">52</option><option value="53">53</option><option value="54">54</option><option value="55">55</option><option value="56">56</option><option value="57">57</option><option value="58">58</option><option value="59">59</option><option value="60">60</option><option value="61">61</option><option value="62">62</option><option value="63">63</option><option value="64">64</option><option value="65">65</option><option value="66">66</option><option value="67">67</option><option value="68">68</option><option value="69">69</option><option value="70">70</option><option value="71">71</option><option value="72">72</option><option value="73">73</option><option value="74">74</option><option value="75">75</option><option value="76">76</option><option value="77">77</option><option value="78">78</option><option value="79">79</option><option value="80">80</option></select></div>
  <div style="flex:1;min-width:90px;align-self:flex-start"><label for="zh">או גובה מעל הקרקע (מ')</label><input id="zh" type="number" inputmode="decimal" step="0.5" placeholder="לא חובה"></div>
 </div>
-<div class="row" style="margin-top:8px">
+<div class="row no-form" style="margin-top:8px">
  <div style="flex:1;min-width:90px"><label for="ww">רוחב החלון (ס"מ)</label><input id="ww" type="number" inputmode="decimal" placeholder="לא חובה"></div>
  <div style="flex:1;min-width:90px"><label for="wh">גובה החלון (ס"מ)</label><input id="wh" type="number" inputmode="decimal" placeholder="לא חובה"></div>
 </div>
-<div class="note" style="margin-top:4px">גודל החלון משפיע על עומס הרוח (בחלון קטן - יניקה גבוהה יותר בקצה הקיר). בלי מידות - מחושב לחלון עד 1 מ"ר (המחמיר).</div>
+<div class="note no-form" style="margin-top:4px">גודל החלון משפיע על עומס הרוח (בחלון קטן - יניקה גבוהה יותר בקצה הקיר). בלי מידות - מחושב לחלון עד 1 מ"ר (המחמיר).</div>
 <div class="row" style="margin-top:10px;justify-content:flex-start">
  <button class="btn" id="go" type="button">חשב</button>
  <span id="geostat" class="note" style="align-self:center"></span>
@@ -146,7 +184,32 @@ body.eng .sales-only{display:none!important}
 <details class="eng-only" style="margin-top:8px" open><summary>פירוט החישוב</summary><div id="det" class="note" style="margin-top:6px"></div></details>
 </div>
 
-<div class="card">
+<div class="card form-only">
+<h2>ב. נתונים מחושבים (גורם מקצועי)</h2>
+<div id="fB" class="note">להזין כתובת ולחשב, ואת מידות הפתח.</div>
+</div>
+
+<div class="card form-only">
+<h2>ג. התאמת המערכת</h2>
+<div id="fC" class="note"></div>
+<label style="margin-top:10px">החלטת בודק המערכת</label>
+<div class="chk" style="flex-direction:column;gap:6px">
+ <label><input type="radio" name="fdec" value="מתאימה לפתח ולתנאי התכן">המערכת מתאימה לפתח ולתנאי התכן</label>
+ <label><input type="radio" name="fdec" value="מתאימה בכפוף לשינויים">המערכת מתאימה בכפוף לשינויים המפורטים</label>
+ <label><input type="radio" name="fdec" value="אינה מתאימה">המערכת אינה מתאימה</label>
+</div>
+<label for="freason" style="margin-top:8px">נימוקי הבודק</label><textarea id="freason"></textarea>
+<div class="g2" style="margin-top:8px">
+ <div><label for="frev">שם הבודק</label><input id="frev"></div>
+ <div><label for="frevd">תאריך</label><input id="frevd" type="date"></div>
+</div>
+<p class="note" style="margin-top:10px">הבדיקה אינה מתייחסת למגבלות ולתנאים הקיימים בשטח, כגון הפרשי גובה בין מפלס הפנים למפלס החוץ, עומק הקיר, מגבלות התקנה ותנאים מקומיים נוספים.</p>
+<div class="row no-print" style="margin-top:10px;justify-content:flex-start;gap:8px">
+ <button class="btn" id="fprint" type="button">הדפס / PDF</button><button class="btn" id="fshare" type="button">שתף טופס</button><span id="fcopied" class="note" style="align-self:center"></span>
+</div>
+</div>
+
+<div class="card no-form">
 <h2>זכוכית ומשקל</h2>
 <div class="g2">
  <div><label for="gw">רוחב השמשה (ס"מ)</label><input id="gw" type="number" inputmode="decimal" placeholder="למשל 120"></div>
@@ -322,8 +385,9 @@ function onType(){
   $('sugg').querySelectorAll('.sg').forEach(el=>el.addEventListener('click',()=>{const h=list[+el.dataset.i];PICK={q:h.label,hit:h};$('addr').value=h.label;$('sugg').innerHTML='';run();}));
  },350);
 }
-let SUMMARY='';
-function calc(){
+let SUMMARY='', G=null;
+function calc(){ if(document.body.classList.contains("form")){ $("ww").value=$("fwid").value; $("wh").value=$("fhei").value; } G=null; calc0(); fcalc(); }
+function calc0(){
  const addr=$('addr').value.trim();
  const fl=Math.max(0,+$('floor').value||0),fh=+$('fh').value||3,cpi=+$('cpi').value,uncF=+$('unc').value;
  const man=parseFloat($('vbman').value);
@@ -355,7 +419,7 @@ function calc(){
  $('envnote').innerHTML=`סימון: ספרה = דרגת סביבה ${envc} (${envwhy}); אות = דרגת עמידות ברוח${markS?'; ש = צבע בעמידות משופרת':''}.`;
  let uncTxt='';
  if(LOC&&LOC.unc&&uncF===1){const W15=(cpeA+cpi)*(vb*1.15)**2/1.6*e; uncTxt=`<div class="alert"><b>מומלץ לבדוק עם מהנדס:</b> המיקום באזור אי-ודאות במפה (טופוגרפיה מורכבת) - המהירות בפועל עשויה להיות גבוהה עד 15%. אם מחילים ×1.15: W = ${fmt0(W15)} Pa, דרגה ${cls(W15)}.</div>`;}
- const MARK=envc+C+markS; $('cls').textContent=MARK; $('vbk').textContent=vb.toFixed(1)+' m/s';
+ const MARK=envc+C+markS; G={vb,src,qb,e,W,Wglass,C,MARK,z,hb,c,addr}; $('cls').textContent=MARK; $('vbk').textContent=vb.toFixed(1)+' m/s';
  const cmax=(CLASSES.find(x=>x[0]===C)||[C,Math.ceil(W/50)*50])[1];
  $('plain').innerHTML=`החלון צריך לעמוד בלחץ רוח של <b class="n">${fmt0(cmax)} Pa</b> לפחות (דרגה <b>${C}</b>)${envc===5?', בסביבה קורוזיבית חמורה (5)':envc===4?', בסביבה קורוזיבית בינונית (4)':''}${markS?', צבע בעמידות משופרת (ש)':''}.`;
 $('W').textContent=fmt0(W)+' Pa';$('W1').textContent=fmt0(1.5*W)+' Pa';$('z').textContent=z.toFixed(1)+' m';
@@ -419,11 +483,99 @@ $('share').addEventListener('click',async()=>{ if(!SUMMARY){$('copied').textCont
  try{ if(navigator.share){ await navigator.share({title:'דרגת חלון - קליל',text}); return; } }catch(e){ if(e&&e.name==='AbortError') return; }
  try{ await navigator.clipboard.writeText(text); $('copied').textContent='הועתק - אפשר להדביק בוואטסאפ'; }catch(e){ $('copied').textContent='לא ניתן לשתף מכאן'; }
  setTimeout(()=>$('copied').textContent='',3000);});
+// ---- project form (Eden's "טופס איסוף נתונים ובדיקת התאמת מערכת לפרויקט") ----
+// Series data: Klil catalogs 2022-2025 (Dropbox /קליל/תקנים/מערכות קליל - טבלאות עומס ומשקל כנף.xlsx, פרופילים מהקטלוגים)
+// env = max sash envelope [width,height] cm (linear between points); kg = max sash weight; kgm = average sash-profile weight kg/m (estimate)
+const SER={
+ '7600':{n:'7600 הזזה',slide:true,ratio:2.5,env:[[145,290],[160,270]],kg:200,kgm:1.3,cls:'H',glz:'6-12 רגילה/רבודה ; 14-28 בידודית',
+  I:[['שולב רגיל 07464',37],['שולב 07600',46],['רגיל+מחוזק 07641',91],['07600+מחוזק',102],['שולב מחוזק 07641',145],['07600 מחוזק',158],['רגיל+מחוזק כבד 07467',183.5],['שולב מחוזק כבד 07467',329.8]]},
+ '9400':{n:'9400 הזזה',slide:true,ratio:2.5,env:[[180,300]],kg:240,kgNote:'240 בקטלוג, 300 בטבלה המנחה',kgm:1.5,cls:'H',test:'דו"ח מעבדה 02.2017 (4 כנפיים): אוויר H, מים F, רוח G (3000 Pa)',glz:'6-14 ; 14-24 בידודית ; עד 45 עם צלון',
+  I:[['שולב רגיל 06841',36.9],['רגיל+מחוזק 06821',118.8],['07482+06943',146.8],['4 כנפיים עם נושק',161.1],['שולב מחוזק 06821',200.7],['06844+06943',228],['06943+06822',257.7],['4 כנפיים נושק מחוזק',352.3]]},
+ '2600':{n:'2600 הרם-הזז',slide:true,ratio:3,env:[[369,430]],kg:250,kgNote:'עד 400 ק"ג עם מגבלות מידה',kgm:2.5,cls:'H',clsNote:'הקטלוג: ת"י 4001 רמה D; מעל D נדרשות מסילות תחתונות חדשות + אביזר 6677 (עלון 08.2024)',glz:'6-43',
+  I:[['שולב רגיל',101],['שולב 07827/07809',140],['שולב + 07724',297],['07827/07809/07807',322],['+ פלדה 02097',363],['07720/07724 (495)',495],['07720/07724 + פלדה',550],['07720 + 07724 + פלדה כפולה',627]]},
+ '7800':{n:'7800 הזזה תרמי',slide:true,ratio:2.5,env:[[140,270]],kg:200,kgm:1.4,cls:'F',glz:'בידודית 28 בלבד',
+  I:[['שולב רגיל 78004',18.8],['78004+78005',50.8],['נושק 78007/78008',73.2],['שולב 78005',82.8],['78004+78009',100.9],['78005+78009',133],['שולב 78009',183]]},
+ '5600':{n:'5600 ציר',slide:false,win:{env:[[130,170],[150,130]],kg:130,kgm:1.0,I:[['מפגש כנפיים - חלון',22]]},door:{env:[[80,270],[100,240]],kg:140,kgm:1.3,I:[['מפגש כנפיים - דלת',43.4]]},cls:'H+',glz:'4-24'},
+ '5800':{n:'5800 ציר תרמי',slide:false,win:{env:[[70,240],[120,210]],kg:120,kgm:1.4,I:[['מפגש 2 כנפיים',65.3],['מפגש + 58004',89.4]]},door:{env:[[110,270]],kg:140,kgm:1.4,I:[['מפגש 2 כנפיים',65.3],['מפגש + 58004',89.4]]},cls:'F',glz:'בידודית 28 בלבד'}
+};
+const CLS_ORDER=['A','B','C','D','E','F','G','H'];
+function envMaxH(env,L){ // max sash height for width L (cm); null if too wide
+ const e=env.slice().sort((a,b)=>a[0]-b[0]); if(L>e[e.length-1][0]+1e-9) return null;
+ if(L<=e[0][0]) return e[0][1];
+ for(let i=0;i<e.length-1;i++) if(L<=e[i+1][0]){const t=(L-e[i][0])/(e[i+1][0]-e[i][0]);return e[i][1]+t*(e[i+1][1]-e[i][1]);}
+ return e[e.length-1][1];}
+// required I of an interlock / meeting stile: trapezoidal load from both sides, span H, sash width L (mm), W (Pa);
+// deflection ≤ min(H/200, 15 mm), E = 70,000 N/mm² - same model that reproduces Klil's catalog charts (0-3%)
+function reqI(Wpa,Lmm,Hmm){const w=Wpa*1e-6*Lmm, a=Math.min(Lmm,Hmm)/2, al=a/Hmm, d=Math.min(Hmm/200,15);
+ return w*Math.pow(Hmm,4)*(25-40*al*al+16*Math.pow(al,4))/(1920*70000*d)/1e4;}
+function glassPick(kind,gw,gh,q,W,gt){const lim=Math.min(gw,gh)/75; let c=[];
+ if(kind==='mono') c=[4,5,6,8,10,12,15,19].map(t=>{const n=nfl(t,gw,gh);return {name:`${t} מ"מ`,lr:n==null?null:n*GTF1[gt],kg:wkg(t,0),d:defl(t,gw,gh,W)};});
+ if(kind==='lg') c=[3,4,5,6,8,10].map(t=>{const d=lgDesig(t,t,0.76);const n=nfl(d,gw,gh);return {name:`${t}${t}.2 (${t}+0.76+${t})`,lr:n==null?null:n*GTF1[gt],kg:wkg(2*t,1),d:defl(d,gw,gh,W)};});
+ if(kind==='igu') c=[4,5,6,8,10,12,15].map(t=>{const n=nfl(t,gw,gh);const g=GTF_IG[gt][gt];return {name:`${t} + מרווח + ${t}`,lr:n==null?null:n*g[0]/0.5,kg:wkg(2*t,0),d:defl(t,gw,gh,W*0.5)};});
+ const i=c.findIndex(x=>x.lr!=null&&x.lr>=q&&x.d<=lim);
+ return {pick:i>=0?c[i]:null,lim,outRange:c.every(x=>x.lr==null)};}
+let FSUM='';
+function fcalc(){
+ if(!document.body.classList.contains('form')) return;
+ const ow=+$('fwid').value, oh=+$('fhei').value, n=+$('fsash').value, nt=+$('ftrack').value, sk=$('fser').value, glz=$('fglz').value;
+ const S=SER[sk];
+ if(!G){ $('fB').innerHTML='להזין כתובת וללחוץ "חשב".'; $('fC').innerHTML=''; FSUM=''; return; }
+ const rows=[]; const R=(k,v)=>rows.push(`<tr><td>${k}</td><td>${v}</td></tr>`);
+ R('מהירות הרוח הבסיסית',`<b class="n">${G.vb.toFixed(1)} מ'/ש'</b> <span class="note">(${G.src})</span>`);
+ R('עומס התכן לפרויקט',`<b class="n">${fmt0(G.W)} Pa</b> · דרגה <b>${G.MARK}</b> <span class="note">(ת"י 414-2023, z = ${G.z.toFixed(1)} מ'${G.hb?', גובה הבניין':', גובה החלון - לא הוזנו קומות בבניין'})</span>`);
+ if(!(ow>=30&&oh>=30)){ rows.push(`<tr><td colspan="2" class="note">להזין רוחב וגובה הפתח (ס"מ) בחלק א'.</td></tr>`); $('fB').innerHTML=`<table class="ftab">${rows.join('')}</table>`; $('fC').innerHTML=''; FSUM=''; return; }
+ const L=ow/n, H=oh; // sash ≈ opening width / sashes (overlap and frame deductions ignored)
+ const isDoor=H>=200; const P=S.slide?S:(isDoor?S.door:S.win);
+ const gt='AN'; const q=Math.max(G.Wglass,G.W,600)*1.06;
+ let gp=glassPick(glz,L*10,H*10,q,G.W,gt), gtUsed=gt;
+ if(!gp.pick&&!gp.outRange){const g2=glassPick(glz,L*10,H*10,q,G.W,'FT'); if(g2.pick){gp=g2;gtUsed='FT';}}
+ const area=L*H/1e4;
+ const gKg=gp.pick?gp.pick.kg*area:null;
+ const pKg=2*(L+H)/100*P.kgm; const sKg=gKg!=null?gKg+pKg:null;
+ const Ireq=n>=2?reqI(G.W,L*10,H*10):null;
+ const glzName={igu:'בידודית',lg:'טריפלקס',mono:'מונוליטי'}[glz];
+ R('הרכב ועובי הזכוכית',gp.pick?`<b>${glzName} ${gp.pick.name}</b>${gtUsed==='FT'?' <b>מחוסמת</b>':''} · ${gp.pick.kg.toFixed(1)} ק"ג/מ"ר<br><span class="note">שמשה ≈ ${L.toFixed(0)}×${H.toFixed(0)} ס"מ, עומס זכוכית ${fmt0(q)} Pa, חוזק + כפף ≤ ${gp.lim.toFixed(0)} מ"מ</span>`:`<span class="bad">${gp.outRange?'מידת השמשה מחוץ לטווח החישוב':'אין הרכב '+glzName+' מתאים'}</span> - להנדסה`);
+ R('מומנט האינרציה הנדרש לשולב',Ireq!=null?`<b class="n">${Ireq.toFixed(1)} ס"מ⁴</b><br><span class="note">כנף ${L.toFixed(0)} ס"מ × ${H.toFixed(0)} ס"מ, עומס טרפזי משני הצדדים, כפף ≤ L/200 ולא יותר מ-15 מ"מ, E = 70,000</span>`:'לא רלוונטי (כנף אחת)');
+ R('משקל כנף מחושב',sKg!=null?`<b class="n">${sKg.toFixed(0)} ק"ג</b><br><span class="note">זכוכית ${gKg.toFixed(0)} + פרופילי כנף כ-${pKg.toFixed(0)} (הערכה, ${P.kgm} ק"ג/מ'), בלי פרזול ואטמים</span>`:'-');
+ $('fB').innerHTML=`<table class="ftab">${rows.join('')}</table>`;
+ // part C - automatic check against catalog data
+ const c=[]; let bad=0, warn=0; const C=(st,k,v)=>{c.push(`<tr><td><span class="ck ${st}">${st==='ok'?'✓':st==='bad'?'✗':'?'}</span>${k}</td><td>${v}</td></tr>`); if(st==='bad')bad++; if(st==='q')warn++;};
+ const mh=envMaxH(P.env,L);
+ C(mh!=null&&H<=mh+0.5?'ok':'bad','מידות כנף',`${L.toFixed(0)}×${H.toFixed(0)} ס"מ; מותר ${mh==null?'עד רוחב '+P.env.map(x=>x[0]).reduce((a,b)=>Math.max(a,b))+' ס"מ':'גובה עד '+mh.toFixed(0)+' ס"מ ברוחב הזה'}`);
+ if(S.ratio) C(H/L<=S.ratio+1e-9?'ok':'bad','יחס גובה/רוחב כנף',`${(H/L).toFixed(2)} (מותר עד ${S.ratio})`);
+ if(sKg!=null) C(sKg<=P.kg?'ok':'bad','משקל כנף',`${sKg.toFixed(0)} ק"ג; מותר ${P.kg} ק"ג${S.kgNote?' ('+S.kgNote+')':''}`);
+ else C('q','משקל כנף','לא חושב (אין הרכב זכוכית)');
+ if(Ireq!=null){const ok=P.I.filter(x=>x[1]>=Ireq).sort((a,b)=>a[1]-b[1]);
+  C(ok.length?'ok':'bad','שולב / מפגש כנפיים',ok.length?`<b>${ok[0][0]}</b> - I = ${ok[0][1]} ס"מ⁴ (נדרש ${Ireq.toFixed(1)})`:`אין פרופיל בקטלוג עם I ≥ ${Ireq.toFixed(1)} (המקסימום ${Math.max(...P.I.map(x=>x[1]))})`);}
+ const reqL=G.C[0]; const ser=S.cls[0];
+ C(CLS_ORDER.indexOf(ser)>=CLS_ORDER.indexOf(reqL)?'q':'bad','דרגת עמידות ברוח',`נדרש ${G.C}; בטבלה המנחה ${S.cls}${S.test?' · '+S.test:''}${S.clsNote?' · '+S.clsNote:''} · <span class="note">אין עדיין דו"ח בדיקה לפי 1068 לכל סדרה - ממתין לפיתוח</span>`);
+ C('q','זיגוג',`טווח הסדרה: ${S.glz} - לוודא שההרכב נכנס`);
+ if($('fnet').value!=='none') C('q','רשת',`${$('fnet').selectedOptions[0].text} - השפעה על הדרגה/המסילות לא מחושבת (ממתין לעדן)`);
+ if(!S.slide&&n>2) C('q','תצורה','ציר עם יותר מ-2 כנפיים - לבדוק חציצים');
+ if(S.slide&&nt>n) C('q','תצורה','יותר נתיבים מכנפיים - לבדוק');
+ const auto=bad?'לפי הבדיקה האוטומטית: <b class="bad">לא מתאימה / מתאימה בכפוף לשינויים</b>':warn?'לפי הבדיקה האוטומטית: <b>מתאימה, בכפוף לבדיקת הסעיפים המסומנים ב-?</b>':'לפי הבדיקה האוטומטית: <b class="ok">מתאימה</b>';
+ $('fC').innerHTML=`<div>סדרה <b>${S.n}</b>${S.slide?'':isDoor?' (דלת)':' (חלון)'}</div><table class="ftab">${c.join('')}</table><p style="margin:8px 0 0">${auto}. ההחלטה של הבודק.</p><p class="note" style="margin:4px 0 0">נתוני הסדרות מהקטלוגים (2022-2025). כנף = רוחב הפתח חלקי מספר הכנפיים, בלי חפיפות וניכויי משקוף.</p>`;
+ const dec=(document.querySelector('input[name=fdec]:checked')||{}).value||'-';
+ const att=[...document.querySelectorAll('.fatt:checked')].map(x=>x.value).join(', ')||'-';
+ FSUM=[`טופס התאמת מערכת לפרויקט - קליל`,`פרויקט: ${$('fproj').value||'-'} · תאריך: ${$('fdate').value||'-'}`,`נציג: ${$('frep').value||'-'} · מתקין: ${$('finst').value||'-'}`,
+  `כתובת: ${LOC?LOC.name:G.addr||'-'}`,`פתח: ${ow}×${oh} ס"מ · ${n} כנפיים · ${nt} נתיבים · סדרה ${sk} · ${glzName} · רשת: ${$('fnet').selectedOptions[0].text}`,`חומר מצורף: ${att}`,
+  ``,`ב. vb ${G.vb.toFixed(1)} מ'/ש' · עומס תכן ${fmt0(G.W)} Pa · דרגה ${G.MARK}`,`זכוכית: ${gp.pick?glzName+' '+gp.pick.name+(gtUsed==='FT'?' מחוסמת':''):'אין הרכב מתאים'}`,
+  `I נדרש לשולב: ${Ireq!=null?Ireq.toFixed(1)+' ס"מ⁴':'לא רלוונטי'} · משקל כנף: ${sKg!=null?sKg.toFixed(0)+' ק"ג':'-'}`,
+  ``,`ג. ${bad?'בדיקה אוטומטית: לא מתאימה / בכפוף לשינויים':'בדיקה אוטומטית: מתאימה'+(warn?' (בכפוף לבדיקה)':'')} · החלטת הבודק: ${dec}`,`נימוקים: ${$('freason').value||'-'}`,`בודק: ${$('frev').value||'-'} ${$('frevd').value||''}`].join('\n');
+}
+$('fprint')&&$('fprint').addEventListener('click',()=>window.print());
+$('fshare')&&$('fshare').addEventListener('click',async()=>{const text=FSUM||'הטופס לא הושלם';
+ try{ if(navigator.share){ await navigator.share({title:'טופס פרויקט - קליל',text}); return; } }catch(e){ if(e&&e.name==='AbortError') return; }
+ try{ await navigator.clipboard.writeText(text); $('fcopied').textContent='הועתק'; }catch(e){ $('fcopied').textContent='לא ניתן לשתף מכאן'; }
+ setTimeout(()=>$('fcopied').textContent='',3000);});
+document.querySelectorAll('input[name=fdec]').forEach(e=>e.addEventListener('change',calc));
+try{ const d=new Date(); $('fdate').value=new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10); }catch(e){}
+
 // ---- mode (sales / engineering) ----
-function setMode(m){ document.body.className=m; $('mSales').classList.toggle('on',m==='sales'); $('mEng').classList.toggle('on',m==='eng'); try{localStorage.setItem('wcMode',m);}catch(e){} }
-$('mSales').addEventListener('click',()=>setMode('sales')); $('mEng').addEventListener('click',()=>setMode('eng'));
-(function(){ let m='sales'; try{ m=localStorage.getItem('wcMode')||'sales'; }catch(e){} if(location.hash==='#eng') m='eng'; if(location.hash==='#sales') m='sales'; setMode(m); })();
-document.querySelectorAll('input,select').forEach(e=>{if(e.id!=='addr') e.addEventListener('input',calc);});
+function setMode(m){ document.body.className=(m==='form'?'form eng':m); $('mSales').classList.toggle('on',m==='sales'); $('mEng').classList.toggle('on',m==='eng'); $('mForm').classList.toggle('on',m==='form'); if(m!=='form'){} calc(); try{localStorage.setItem('wcMode',m);}catch(e){} }
+$('mSales').addEventListener('click',()=>setMode('sales')); $('mEng').addEventListener('click',()=>setMode('eng')); $('mForm').addEventListener('click',()=>setMode('form'));
+(function(){ let m='sales'; try{ m=localStorage.getItem('wcMode')||'sales'; }catch(e){} if(location.hash==='#eng') m='eng'; if(location.hash==='#sales') m='sales'; if(location.hash==='#form') m='form'; setMode(m); })();
+document.querySelectorAll('input,select,textarea').forEach(e=>{if(e.id!=='addr') e.addEventListener('input',calc);});
 $('go').addEventListener('click',run);
 $('addr').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();run();}});
 $('addr').addEventListener('input',onType);
